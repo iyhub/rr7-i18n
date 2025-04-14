@@ -1,0 +1,154 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+
+## 框架(React router V7(RR7))
+框架结构:
+.
+├── Dockerfile
+├── README.md
+├── app
+│   ├── app.css // 全局样式
+│   ├── components // 子组件文件夹
+│   │   └── LanguageSwitcher.tsx
+│   ├── entry.client.tsx
+│   ├── entry.server.tsx
+│   ├── locales //多语言文件夹
+│   │   ├── en.ts // 英文i18n翻译文件
+│   │   ├── es.ts // 西班牙语i18n翻译文件
+│   │   └── zh.ts // 中文文件i18n翻译文件
+│   ├── middleware // 中间件s
+│   │   └── i18next.ts
+│   ├── root.tsx 
+│   ├── routes
+│   │   ├── api //api 文件夹
+│   │   │   └── foo.ts // 对应路径的位置api/foo,需要在routes.ts中定义
+│   │   ├── home.tsx
+│   │   └── locales.ts
+│   ├── routes.ts // 路由定义文件
+
+├── package-lock.json
+├── package.json
+├── public
+│   └── favicon.ico
+├── react-router.config.ts
+├── tsconfig.json
+└── vite.config.ts
+
+
+### 数据加载/提交
+使用React router V7 的loader/clientLoader 配合RR7 From
+
+
+### 用户界面交互
+- 样式:tailwindcss
+- 动画:framer-motion
+- 图标:lucide-react
+
+
+
+### 路由定义
+规则:
+1.页面定义路由文件在/app/routers/<url>.[tsx/ts]
+2.API定义路由文件在/app/api/<url>.[ts]
+
+
+### 交互示例
+1. loader方式获取数据
+
+```ts
+// File: app/routes.ts
+import { type RouteConfig, index, route } from "@react-router/dev/routes";
+
+export default [
+  route("hello", "routes/hello.tsx"), // 定义路由路径
+] satisfies RouteConfig;
+```
+
+```tsx 
+// File:app/routes/hello.tsx
+// 
+// hello 路由 对应https://domain.com/hello
+import { useLoaderData } from "react-router";
+import type { Route } from "./+types/hello";
+export async function loader({ context }: Route.LoaderArgs) {
+  const data = { foo: "bar" };
+  return { data };
+}
+
+export default function HelloPage() {
+  const { data } = useLoaderData<typeof loader>();
+  return (
+    <div>
+      <h1>Hello:{data.foo}</h1>
+    </div>
+  );
+}
+```
+
+2. api 方式获取数据
+
+2.1 用户交互页面/组件
+```tsx
+//routes/search.tsx
+import React from "react";
+import { Form, useFetcher, useLoaderData } from "react-router";
+
+import type { Route } from "./+types/search";
+
+function Search() {
+  const fetcher = useFetcher();
+  return (
+    <div>
+      {/*标记method=get,指定获取端点为:/api/foo */}
+      <fetcher.Form method="get" action="/api/foo"> 
+        <input
+          type="text"
+          name="q"
+          className="border-2 border-gray-300 rounded-md p-2"
+        />
+        <button type="submit" className="bg-blue-500 text-white p-2 rounded-md">
+          Search
+        </button>
+        Query Result Foo={fetcher.data?.foo}
+      </fetcher.Form>
+    </div>
+  );
+}
+
+export default Search;
+```
+
+```ts
+//routes/api/foo.ts
+import type { LoaderFunctionArgs, ActionFunctionArgs } from "react-router";
+
+// 对应get请求
+export async function loader({ request }: LoaderFunctionArgs) {
+  // 获取请求参数...
+
+  // 查询数据
+
+  // 组织数据
+
+  // 返回响应
+  return { foo: "bar" };
+}
+
+// 对应post请求
+export async function action({ request }: ActionFunctionArgs) {
+  // 获取请求体...
+
+  // 处理业务逻辑...
+
+  // 返回响应
+  return { result: "bar" };
+}
+
+
+```
+
+
+

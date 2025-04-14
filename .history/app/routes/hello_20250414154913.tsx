@@ -1,0 +1,15 @@
+import { useLoaderData } from "react-router";
+import type { Route } from "./+types/hello";
+export async function loader({ context }: Route.LoaderArgs) {
+  const data = { foo: "bar" };
+  return { data };
+}
+
+export default function HelloPage() {
+  const { foo } = useLoaderData<typeof loader>();
+  return (
+    <div>
+      <h1>Hello:{foo}</h1>
+    </div>
+  );
+}

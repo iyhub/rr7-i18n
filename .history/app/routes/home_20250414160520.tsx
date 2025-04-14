@@ -43,7 +43,7 @@ export default function Home() {
   const { date, title, description, money } = useLoaderData<typeof loader>();
   return (
     <div>
-      <h1 className="text-2xl font-bold">I18n Tools</h1>
+      <h1 className="text-2xl font-bold">多语言的PDF Tools</h1>
       <p>Date: {date}</p>
       <p>Title: {title}</p>
       <p>Description: {description}</p>

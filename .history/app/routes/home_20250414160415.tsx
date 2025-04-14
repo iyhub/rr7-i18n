@@ -3,7 +3,6 @@ import { Welcome } from "../welcome/welcome";
 import { getLocale, getInstance } from "@/middleware/i18next";
 import { useLoaderData } from "react-router";
 import { Form } from "react-router";
-import Search from "./search";
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -43,13 +42,16 @@ export default function Home() {
   const { date, title, description, money } = useLoaderData<typeof loader>();
   return (
     <div>
-      <h1 className="text-2xl font-bold">I18n Tools</h1>
+      <h1>多语言的PDF Tools</h1>
       <p>Date: {date}</p>
       <p>Title: {title}</p>
       <p>Description: {description}</p>
       <p>Money: {money}</p>
 
-      <Search />
+      <Form method="post">
+        <input type="text" name="foo" />
+        <button type="submit">Submit</button>
+      </Form>
     </div>
   );
 }
